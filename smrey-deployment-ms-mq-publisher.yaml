@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-mq-publisher
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fe-mq-publisher
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fe-mq-publisher
+    spec:
+      containers:
+      - image: jomimart13/fe-mq-publisher:latest
+        imagePullPolicy: Always
+        name: fe-mq-publisher
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"          
+        ports:
+        - containerPort: 8080
+        env:
+            - name: spring.rabbitmq.host
+              value: rabbitmq.default.svc.cluster.local
+            - name: spring.rabbitmq.username
+              value: user
+            - name: spring.rabbitmq.password
+              value: tc4tPWbyVl
+            - name: logging.file.name
+              value: /nfs/general/trace.log                 

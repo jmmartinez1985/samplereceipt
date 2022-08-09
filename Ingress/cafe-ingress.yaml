@@ -1,0 +1,86 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fe-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  #tls:
+  #- hosts:
+  #  - cafe.smrey.com
+  #  secretName: cafe-secret
+  rules:
+  - host: cafe.smrey.com
+    http:
+      paths: 
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: echoserver
+            port:
+              number: 80                      
+      - path: /invoice/store
+        pathType: Exact
+        backend:
+          service:
+            name: fe-crud-service
+            port:
+              number: 80
+      - path: /invoice/
+        pathType: Prefix
+        backend:
+          service:
+            name: fe-crud-service
+            port:
+              number: 80              
+      - path: /invoice/element
+        pathType: Exact
+        backend:
+          service:
+            name: fe-crud-service
+            port:
+              number: 80
+      - path: /invoice/patch
+        pathType: Exact
+        backend:
+          service:
+            name: fe-crud-service
+            port:
+              number: 80                                                                   
+      - path: /publish/fe
+        pathType: Exact
+        backend:
+          service:
+            name: fe-mq-publisher-service
+            port:
+              number: 80  
+      - path: /publish/db
+        pathType: Exact
+        backend:
+          service:
+            name: fe-mq-publisher-service
+            port:
+              number: 80                             
+      - path: /invoice/ingest
+        pathType: Exact
+        backend:
+          service:
+            name: fe-mq-ingest-service
+            port:
+              number: 80
+      - path: /stats/ingest
+        pathType: Exact
+        backend:
+          service:
+            name: fe-elastic-crud-service
+            port:
+              number: 80
+      - path: /stats/selects
+        pathType: Exact
+        backend:
+          service:
+            name: fe-elastic-crud-service
+            port:
+              number: 80                                                

@@ -1,0 +1,62 @@
+FROM adoptopenjdk/openjdk11:jre-11.0.11_9-alpine
+
+LABEL Jose Martinez <stn_rules@hotmail.com>
+
+# Get Jar file
+ARG JAR_FILE=target/ms-ibm-mq-*.jar
+
+# cd /workspace/app
+WORKDIR /workspace/app
+
+# cp target/*.jar /workspace/app/app.jar
+COPY ${JAR_FILE} app.jar
+
+# java -jar /opt/app/app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
+
+
+docker network create my-net
+
+docker run -it --rm --network my-net --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management 
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management 
+user/pass: guest/guest
+
+docker run -it --rm -e "spring.rabbitmq.host=172.18.0.2" --network my-net --name mq-publisher -p 8080:9092 jomimart13/fe-mq-publisher
+
+docker run --name mysqlcrud --network my-net -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+docker run --name mysqlsle -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+docker pull phpmyadmin/phpmyadmin:latest
+
+docker run --name myphpmycrud -d --link mysqlcrud:db -p 8081:80 phpmyadmin/phpmyadmin
+docker run --name myphpmycrud  --network my-net -d --link mysqlcrud:db -p 8081:80 phpmyadmin/phpmyadmin
+
+docker inspect e6b8e0df006f | grep "IPAddress"
+
+DOCKER BUILD/TAG/PUSH (sample fe-crud)
+sudo docker build -t fe-crud .
+docker tag 004192110c99 jomimart13/fe-crud:latest
+docker push jomimart13/fe-crud:latest
+
+sudo docker build -t fe-mq-publisher .
+docker tag daa64fa9238d jomimart13/fe-mq-publisher:latest
+docker push jomimart13/fe-mq-publisher:latest
+
+sudo docker build -t fe-ingest-data .
+docker tag 5d999ebe29c0 jomimart13/fe-ingest-data:latest
+docker push jomimart13/fe-ingest-data:latest
+
+sudo docker build -t fe-listener-data .
+docker tag 9731686fad1c jomimart13/fe-listener-data:latest
+docker push jomimart13/fe-listener-data:latest
+
+sudo docker build -t fe-elastic-crud .
+docker tag 9731686fad1c jomimart13/fe-elastic-crud:latest
+docker push jomimart13/fe-elastic-crud:latest
+
+
+sudo docker build -t samplemq .
+docker tag ec036b567c3d jomimart13/samplemq:latest
+docker push jomimart13/samplemq:latest
+
+
+
