@@ -35,3 +35,13 @@ spec:
               value: tc4tPWbyVl
             - name: logging.file.name
               value: /nfs/general/trace.log                 
+            - name: exchange.name
+              value: delay_exchange_queue             
+            - name: routing.name
+              value: routing_queue
+            - name: queue.rejected
+              value: queue.fe.input.rejected              
+            - name: queue.db.name
+              value: queue.db             
+              
+                            

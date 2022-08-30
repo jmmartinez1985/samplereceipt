@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v2beta2 
+apiVersion: autoscaling/v2 
 kind: HorizontalPodAutoscaler
 metadata:
   name: fe-hpa-crud 
@@ -9,7 +9,7 @@ spec:
     kind: Deployment 
     name: fe-crud 
   minReplicas: 1 
-  maxReplicas: 8 
+  maxReplicas: 4 
   metrics: 
   - type: Resource
     resource:

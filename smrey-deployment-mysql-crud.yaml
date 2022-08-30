@@ -34,4 +34,4 @@ spec:
             - name: MYSQL_USER
               value: root
             - name: MYSQL_PASSWORD
-              value: mpGJMW5ZU0
+              value: AjLqEQeFgq

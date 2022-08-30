@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: fe-elastic-crud-service
+  name: nodeserver
   namespace: default
 spec:
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 3000
       protocol: TCP
-  #type: NodePort         
+  type: NodePort
   selector:
-    app: fe-elastic-crud
+    app: nodeserver
