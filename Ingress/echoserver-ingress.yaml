@@ -1,0 +1,95 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fe-aws-ingress
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: Environment=dev,Team=test
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'    
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Exact
+            backend:
+              service:
+                name: echoserver
+                port:
+                  number: 80
+          - path: /actuator/health
+            pathType: Exact
+            backend:
+              service:
+                name: fe-crud-service
+                port:
+                  number: 80                                    
+          - path: /invoice/store
+            pathType: Exact
+            backend:
+              service:
+                name: fe-crud-service
+                port:
+                  number: 80
+          - path: /invoice/patch
+            pathType: Exact
+            backend:
+              service:
+                name: fe-crud-service
+                port:
+                  number: 80
+          - path: /invoice/ingest
+            pathType: Exact
+            backend:
+              service:
+                name: fe-mq-ingest-service
+                port:
+                  number: 80                   
+          - path: /invoice/
+            pathType: Prefix
+            backend:
+              service:
+                name: fe-crud-service
+                port:
+                  number: 80                   
+          - path: /invoice/element
+            pathType: Exact
+            backend:
+              service:
+                name: fe-crud-service
+                port:
+                  number: 80                                             
+          - path: /publish/fe
+            pathType: Exact
+            backend:
+              service:
+                name: fe-mq-publisher-service
+                port:
+                  number: 80                  
+          - path: /publish/db
+            pathType: Exact
+            backend:
+              service:
+                name: fe-mq-publisher-service
+                port:
+                  number: 80
+          - path: /stats/ingest
+            pathType: Exact
+            backend:
+              service:
+                name: fe-elastic-crud-service
+                port:
+                  number: 80
+          - path: /stats/selects
+            pathType: Exact
+            backend:
+              service:
+                name: fe-elastic-crud-service
+                port:
+                  number: 80
+                                                                              

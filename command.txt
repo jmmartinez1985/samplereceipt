@@ -1,0 +1,170 @@
+
+
+ACCESS IE
+sudo iptables -P FORWARD ACCEPT
+sudo apt-get install iptables-persistent -y
+
+
+microk8s enable helm3
+
+RABBIT MQ
+
+https://github.com/bitnami/charts/tree/master/bitnami/rabbitmq/#installing-the-chart
+
+microk8s helm3 repo add bitnami https://charts.bitnami.com/bitnami
+
+microk8s helm install rabbitmq bitnami/rabbitmq --version 8.24.13\
+    --set replicaCount=2 
+	
+microk8s helm3 install rabbitmq bitnami/rabbitmq --version 8.24.13 \
+    --set replicaCount=1 \
+    --set auth.user=admin \
+    --set auth.password=password 
+
+microk8s helm3 upgrade rabbitmq bitnami/rabbitmq --version 8.24.13 \
+    --set replicaCount=2 
+    
+microk8s helm3 install rabbitmq bitnami/rabbitmq --version 8.24.13
+
+microk8s kubectl port-forward --namespace default svc/rabbitmq 15672:15672
+
+microk8s helm3 delete rabbitmq
+
+password rabbitmq: pOJ0YZOj9j
+password rabbitmq eks: tc4tPWbyVl
+
+kubectl get secret --namespace default rabbitmq -o jsonpath="{.data}"
+echo "Password      : $(microk8s kubectl get secret --namespace default rabbitmq -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)"
+
+
+MYSQL
+
+microk8s helm3 install mysql bitnami/mysql \
+	--set architecture=replication
+	
+microk8s helm3 upgrade mysql bitnami/mysql \
+	--set architecture=replication
+	
+CLIENTE MYSQL
+
+echo Primary: mysql-primary.default.svc.cluster.local:3306
+echo Secondary: mysql-secondary.default.svc.cluster.local:3306
+echo Username: root
+kubectl get secret --namespace default mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode"
+
+kubectl run mysql-client --rm --tty -i --restart='Never' --image  docker.io/bitnami/mysql:8.0.29-debian-11-r3 --namespace default --env MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD --command -- bash
+
+mysql -h mysql-primary.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
+
+kubectl port-forward --namespace default svc/mysql-primary 3306:3306
+
+pass:root/ogyh01InTH
+	
+microk8s helm3 delete mysql
+
+microk8s helm3 install phpmyadmin bitnami/phpmyadmin
+	
+Destroy everything
+
+microk8s kubectl delete all --all
+microk8s kubectl delete all --all -n rabbitmq-system
+
+METALLB
+microk8s enable metallb
+
+NGINX CONTROLLER
+
+microk8s helm3 repo add nginx-stable https://helm.nginx.com/stable
+microk8s helm3 repo update
+microk8s helm3 install nginx nginx-stable/nginx-ingress
+
+METRICS SERVER
+microk8s enable metrics-server
+microk8s enable prometheus
+	user/pass: admin/admin
+	
+Sample Metrics 
+#Get CPU and Memory current usage of all Nodes
+kubectl top nodes
+#Get CPU and Memory Requests and Limits for Nodes
+kubectl describe nodes
+OR
+kubectl describe nodes | grep 'Name:\|  cpu\|  memory'	
+#Get CPU and Memory current usage of pods in all Namespaces
+kubectl top pods --all-namespaces
+#Get CPU and Memory current usage of containers running in pods in all Namespaces
+kubectl top pods --all-namespaces --containers=true
+#Sort (descending order) current CPU usage of pods in all Namespaces 
+kubectl top pods --all-namespaces | sort --key 2 -b | awk 'NR<2{print $0;next}{print $0| "sort --key 3 --numeric -b --reverse"}'
+#Sort (descending order) current Memory usage of pods in all Namespaces 
+kubectl top pods --all-namespaces | sort --key 2 -b | awk 'NR<2{print $0;next}{print $0| "sort --key 4 --numeric -b --reverse"}'
+#Sort (descending order) current CPU usage of containers in pods in all Namespaces 
+kubectl top pods --all-namespaces --containers=true | sort --key 4 -b | awk 'NR<1{print $0;next}{print $0| "sort --key 4 --numeric -b --reverse"}'
+#Sort (descending order) current Memory usage of containers in pods in all Namespaces 
+kubectl top pods --all-namespaces --containers=true | sort --key 5 -b | awk 'NR<1{print $0;next}{print $0| "sort --key 5 --numeric -b --reverse"}'
+
+
+NFS
+
+sudo apt install nfs-kernel-server
+sudo mkdir /var/nfs/general -p
+ls -la /var/nfs/general
+sudo chown nobody:nogroup /var/nfs/general
+sudo nano /etc/exports
+        /var/nfs/general     *(rw,sync,no_subtree_check,insecure)
+        /home                *(rw,sync,no_root_squash,no_subtree_check)
+sudo exportfs -rav
+sudo exportfs -v
+showmount -e
+sudo systemctl restart nfs-kernel-server
+sudo systemctl status nfs-kernel-server
+
+helm
+microk8s helm3 repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+microk8s helm3 install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+    --set nfs.server=192.168.1.107 \
+    --set nfs.path=/var/nfs/general \
+    --set meta.helm.sh/release-namespace=default
+
+
+CLIENT
+sudo apt update
+sudo apt-get install nfs-common -y
+sudo mkdir -p /nfs/general
+sudo mkdir -p /nfs/home
+sudo mount 192.168.111.29:/var/nfs/general /nfs/general
+sudo mount 192.168.111.29:/home /nfs/home
+df -h
+du -sh /nfs/home
+du -sh /nfs/general
+
+mount | grep general
+mount | grep general/xml
+umount /mnt
+sudo touch /var/nfs/general/general.test
+
+sudo nano /etc/fstab
+192.168.1.107:/var/nfs/general    /nfs/general   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+192.168.1.107:/home               /nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+
+
+
+ELASTIC
+microk8s helm3 install elastic \
+  --set global.kibanaEnabled=true,name=elasticsearch \
+  --set master.masterOnly=true,master.replicaCount=1 \
+  --set data.replicaCount=1 \
+  --set ingest.replicaCount=0,coordinating.replicaCount=0 \
+  bitnami/elasticsearch
+microk8s helm3 delete elastic
+  
+kubectl port-forward --namespace default svc/elastic-elasticsearch 9200:9200  
+kubectl port-forward --namespace default svc/elastic-kibana 5601:5601
+kubectl port-forward --namespace prometheus svc/prometheus-server 80:80
+kubectl port-forward --namespace default svc/grafana 8080:3000
+
+microk8s helm3 install grafana bitnami/grafana
+microk8s helm3 delete grafana 
+
+kubectl get hpa fe-crud --watch
+kubectl get hpa fe-crud -o yaml

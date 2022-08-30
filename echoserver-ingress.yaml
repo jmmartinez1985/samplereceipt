@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echoserver
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: Environment=dev,Team=test
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Exact
+            backend:
+              service:
+                name: echoserver
+                port:
+                  number: 80
+          - path: /publish/fe
+            pathType: Exact
+            backend:
+              service:
+                name: fe-mq-publisher-service
+                port:
+                  number: 80                  
+          - path: /publish/db
+            pathType: Exact
+            backend:
+              service:
+                name: fe-mq-publisher-service
+                port:
+                  number: 80                   
