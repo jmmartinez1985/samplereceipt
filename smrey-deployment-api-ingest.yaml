@@ -30,14 +30,14 @@ spec:
             cpu: "500m"        
         volumeMounts:
         - name: data
-          mountPath: /data
+          mountPath: /nfs/general
         #command: ["/bin/sh"]
         #args: ["-c", "while true; do date >> /var/nfs/general/filepu.txt; sleep 5; done"]    
         ports:
         - containerPort: 8080
         env:
             - name: location.tosave
-              value: /data/
+              value: /
             - name: invoice.api.url
               value: http://fe-crud-service.default.svc.cluster.local/invoice/store
             - name: queue.publish.api
