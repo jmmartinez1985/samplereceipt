@@ -16,7 +16,7 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: efs-claim  
+          claimName: pvc-nfs-pv-fe-data 
       containers:
       - image: jomimart13/fe-ingest-data:latest
         imagePullPolicy: Always
