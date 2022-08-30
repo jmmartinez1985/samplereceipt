@@ -16,7 +16,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: efs-claim
+            claimName: pvc-nfs-pv-fe-data
       containers:
         - image: jomimart13/fe-listener-data:latest
           imagePullPolicy: Always
@@ -30,7 +30,7 @@ spec:
               cpu: "500m"          
           volumeMounts:
             - name: data
-              mountPath: /data
+              mountPath: /nfs/general
           #command: ["/bin/sh"]
           #args: ["-c", "while true; do date >> /var/nfs/general/filepu.txt; sleep 5; done"]
           ports:
