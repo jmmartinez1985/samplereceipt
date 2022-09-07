@@ -32,7 +32,10 @@ spec:
             - name: spring.rabbitmq.username
               value: user
             - name: spring.rabbitmq.password
-              value: TwDfFSbnbC
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: rabbitmq-password
             - name: k8s.wsupdateinvoice
               value: http://fe-crud-service.default.svc.cluster.local/invoice/patch
             - name: flagstatsIngest
