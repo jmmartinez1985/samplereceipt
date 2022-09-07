@@ -28,7 +28,7 @@ spec:
         - containerPort: 8080
         env:
             - name: MYSQL_HOST
-              value: mysql.default.svc.cluster.local
+              value: mysql-primary.default.svc.cluster.local
             - name: MYSQL_DATABASE
               value: db_control_fe
             - name: MYSQL_USER
