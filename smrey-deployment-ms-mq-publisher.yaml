@@ -32,7 +32,7 @@ spec:
             - name: spring.rabbitmq.username
               value: user
             - name: spring.rabbitmq.password
-              value: tc4tPWbyVl
+              value: TwDfFSbnbC
             - name: logging.file.name
               value: /nfs/general/trace.log                 
             - name: exchange.name
