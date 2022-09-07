@@ -41,7 +41,7 @@ spec:
             - name: spring.rabbitmq.username
               value: user
             - name: spring.rabbitmq.password
-              value: tc4tPWbyVl
+              value: TwDfFSbnbC
             - name: k8s.basepath
               value: /
             - name: k8s.wspubliser
