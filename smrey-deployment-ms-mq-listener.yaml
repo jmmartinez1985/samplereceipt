@@ -60,4 +60,4 @@ spec:
             - name: logging.file.name
               value: trace.log
             - name: queueEnabledStatus
-              value: 500,501,502,503,504,400,404           
+              value: 500,501,502,503,504         
