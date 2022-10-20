@@ -60,4 +60,14 @@ spec:
             - name: logging.file.name
               value: trace.log
             - name: queueEnabledStatus
-              value: 500,501,502,503,504         
+              value: 500,501,502,503,504
+            - name: aludra.base
+              value: https://qa-apim.aludra.cloud              
+            - name: aludra.endpoint.mdl16.fe
+              value: /mdl16/XMLfeRecfeDGI
+            - name: aludra.apikey
+              value: vqW+I++PyUAsXe90TBKpLQVw9sg5v0SFzU3SYGuuQmYkErzSffACULX+THENtNY7l/cGatWlfixwLfM6sW6MuojrQUgXaTuofaStEcPhya/Q4MrphGSyHySIoo0W+fKi6puW8NfYw+Q1hnwEJLY9B276++cKZVDM8Gv688KwYbxw6gpg4h36VXg1sbqz5CzAdT426w8k51QlpM8vuqYIEJMIgPhMn4xxOsc9Iz7FfIEkD2j9kCZNFn/0/CY41fwVefMyO++2IisN96eVNNjgZBgdy5P0aFqEgbfBUezSDXDJRCv1zsiJku12V736e+j2mffjhQ7ASwZ+fFtD1QgJ9Yz9m6ErcRALI9Tj6kcdaNo=
+            - name: aludra.subscriptionKey
+              value: f718d6d8af9848008b8f6a6f516cb7ba
+            - name: aludra.company
+              value: HYPE              
