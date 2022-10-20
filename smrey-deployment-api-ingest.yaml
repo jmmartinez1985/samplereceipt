@@ -37,7 +37,7 @@ spec:
         - containerPort: 8080
         env:
             - name: location.tosave
-              value: /
+              value: /nfs/general/
             - name: invoice.api.url
               value: http://fe-crud-service.default.svc.cluster.local/invoice/store
             - name: queue.publish.api
