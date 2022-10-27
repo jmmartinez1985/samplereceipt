@@ -66,7 +66,7 @@ spec:
             - name: aludra.endpoint.mdl16.fe
               value: /mdl16/XMLfeRecfeDGI
             - name: aludra.apikey
-              value: FHEpi3JahRB23g3Dn1D11KQQN4OV8yO1IgawjV/ggEeK2r3NT4bRwwzDe1HSJ1IksfyWo7Q+DC8OuKVuOlarbvhuenq7hXq8lp+k9/H6QCZrgKd1pgYE+068sAGmnLL59/cxLkYCwsW6ggpEWeSnRZDGgj62pBja9RDaMDkM37v5PIEBh2rkU6IyywVA/3fjvyIFfwRTwMQ4bQfGooDuHVJidd+Nn0SFjF1rAPhfz7qQjSMCc1U6I0ZlOlJhMaPg6xuaduS68fBSitiFqWf4d8LIxhqT/lJrDhRMSiFDVC5pq+G6BSHyCO6qFRwQ0DDjSH8ZjrnCASRP7UtT811QJQ4o+rGjdACaDyZUUqSLs4s=
+              value: vqW+I++PyUAsXe90TBKpLQVw9sg5v0SFzU3SYGuuQmYkErzSffACULX+THENtNY7l/cGatWlfixwLfM6sW6MuojrQUgXaTuofaStEcPhya/Q4MrphGSyHySIoo0W+fKi6puW8NfYw+Q1hnwEJLY9B276++cKZVDM8Gv688KwYbxw6gpg4h36VXg1sbqz5CzAdT426w8k51QlpM8vuqYIEJMIgPhMn4xxOsc9Iz7FfIEkD2j9kCZNFn/0/CY41fwVefMyO++2IisN96eVNNjgZBgdy5P0aFqEgbfBUezSDXDJRCv1zsiJku12V736e+j2mffjhQ7ASwZ+fFtD1QgJ9Yz9m6ErcRALI9Tj6kcdaNo=
             - name: aludra.subscriptionKey
               value: f718d6d8af9848008b8f6a6f516cb7ba
             - name: aludra.company
