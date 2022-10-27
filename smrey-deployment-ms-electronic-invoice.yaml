@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-invoice-dgi
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fe-invoice-dgi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fe-invoice-dgi
+    spec:
+      containers:
+        - image: jomimart13/fe-invoice-dgi:latest
+          imagePullPolicy: Always
+          name: fe-invoice-dgi
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"          
+          ports:
+            - containerPort: 8080
+          env:
+            - name: aludra.base
+              value: https://qa-apim.aludra.cloud              
+            - name: aludra.endpoint.mdl16.fe
+              value: /mdl16/XMLfeRecfeDGI
+            - name: aludra.apikey
+              value: FHEpi3JahRB23g3Dn1D11KQQN4OV8yO1IgawjV/ggEeK2r3NT4bRwwzDe1HSJ1IksfyWo7Q+DC8OuKVuOlarbvhuenq7hXq8lp+k9/H6QCZrgKd1pgYE+068sAGmnLL59/cxLkYCwsW6ggpEWeSnRZDGgj62pBja9RDaMDkM37v5PIEBh2rkU6IyywVA/3fjvyIFfwRTwMQ4bQfGooDuHVJidd+Nn0SFjF1rAPhfz7qQjSMCc1U6I0ZlOlJhMaPg6xuaduS68fBSitiFqWf4d8LIxhqT/lJrDhRMSiFDVC5pq+G6BSHyCO6qFRwQ0DDjSH8ZjrnCASRP7UtT811QJQ4o+rGjdACaDyZUUqSLs4s=
+            - name: aludra.subscriptionKey
+              value: f718d6d8af9848008b8f6a6f516cb7ba
+            - name: aludra.company
+              value: HYPE              
