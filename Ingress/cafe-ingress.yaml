@@ -83,4 +83,11 @@ spec:
           service:
             name: fe-elastic-crud-service
             port:
-              number: 80                                                
+              number: 80      
+      - path: /fe/direct
+        pathType: Exact
+        backend:
+          service:
+            name: fe-invoice-dgi-service  
+            port:
+              number: 80
