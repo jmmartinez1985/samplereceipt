@@ -5,6 +5,8 @@ sudo iptables -P FORWARD ACCEPT
 sudo apt-get install iptables-persistent -y
 
 
+microk8s enable hostpath-storage dns community dashboard
+
 microk8s enable helm3
 
 RABBIT MQ
@@ -13,7 +15,7 @@ https://github.com/bitnami/charts/tree/master/bitnami/rabbitmq/#installing-the-c
 
 microk8s helm3 repo add bitnami https://charts.bitnami.com/bitnami
 
-microk8s helm install rabbitmq bitnami/rabbitmq --version 8.24.13\
+microk8s helm3 install rabbitmq bitnami/rabbitmq \
     --set replicaCount=2 
 	
 microk8s helm3 install rabbitmq bitnami/rabbitmq --version 8.24.13 \
@@ -41,28 +43,33 @@ MYSQL
 
 microk8s helm3 install mysql bitnami/mysql \
 	--set architecture=replication
+
 	
 microk8s helm3 upgrade mysql bitnami/mysql \
 	--set architecture=replication
+
+
+secondary.replicaCount
 	
 CLIENTE MYSQL
 
-echo Primary: mysql-primary.default.svc.cluster.local:3306
-echo Secondary: mysql-secondary.default.svc.cluster.local:3306
 echo Username: root
-kubectl get secret --namespace default mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode"
+  MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default mysql -o jsonpath="{.data.mysql-root-password}" | base64 -d)
 
-kubectl run mysql-client --rm --tty -i --restart='Never' --image  docker.io/bitnami/mysql:8.0.29-debian-11-r3 --namespace default --env MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD --command -- bash
+kubectl run mysql-client --rm --tty -i --restart='Never' --image  docker.io/bitnami/mysql:8.0.33-debian-11-r3 --namespace default --env MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD --command -- bash
 
 mysql -h mysql-primary.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
 
+
 kubectl port-forward --namespace default svc/mysql-primary 3306:3306
 
-pass:root/ogyh01InTH
-	
-microk8s helm3 delete mysql
 
 microk8s helm3 install phpmyadmin bitnami/phpmyadmin
+
+kubectl port-forward --namespace default svc/phpmyadmin 80:80
+kubectl port-forward --namespace default svc/echoserver 8082:80
+
+microk8s helm3 delete helm-name 
 	
 Destroy everything
 
@@ -77,6 +84,7 @@ NGINX CONTROLLER
 microk8s helm3 repo add nginx-stable https://helm.nginx.com/stable
 microk8s helm3 repo update
 microk8s helm3 install nginx nginx-stable/nginx-ingress
+microk8s helm3 delete nginx
 
 METRICS SERVER
 microk8s enable metrics-server
@@ -132,8 +140,8 @@ sudo apt update
 sudo apt-get install nfs-common -y
 sudo mkdir -p /nfs/general
 sudo mkdir -p /nfs/home
-sudo mount 192.168.111.29:/var/nfs/general /nfs/general
-sudo mount 192.168.111.29:/home /nfs/home
+sudo mount 192.168.111.25:/var/nfs/general /nfs/general
+sudo mount 192.168.111.25:/home /nfs/home
 df -h
 du -sh /nfs/home
 du -sh /nfs/general
@@ -144,8 +152,8 @@ umount /mnt
 sudo touch /var/nfs/general/general.test
 
 sudo nano /etc/fstab
-192.168.1.107:/var/nfs/general    /nfs/general   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
-192.168.1.107:/home               /nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+192.168.111.25:/var/nfs/general    /nfs/general   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+192.168.111.25:/home               /nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
 
 
 
