@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-mq-listener-db
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fe-mq-listener-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fe-mq-listener-db
+    spec:
+      containers:
+        - image: hnldockerregistry.azurecr.io/fe-listener-db:latest
+          imagePullPolicy: Always
+          name: fe-mq-listener-db
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"          
+          ports:
+            - containerPort: 8080
+          env:
+            - name: spring.rabbitmq.host
+              value: rabbitmq.default.svc.cluster.local
+            - name: spring.rabbitmq.username
+              value: user
+            - name: spring.rabbitmq.password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: rabbitmq-password
+            - name: k8s.wsupdateinvoice
+              value: http://fe-crud-service.default.svc.cluster.local/invoice/patch
+            - name: flagstatsIngest
+              value: "true"
+            - name: k8s.wsstatsIngest
+              value: http://fe-elastic-crud-service.default.svc.cluster.local/stats/ingest              
+            - name: logging.file.name
+              value: trace.log
+            - name: queueEnabledStatus
+              value: 500,501,502,503,504          

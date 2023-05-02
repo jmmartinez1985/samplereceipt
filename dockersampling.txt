@@ -33,30 +33,115 @@ docker run --name myphpmycrud  --network my-net -d --link mysqlcrud:db -p 8081:8
 docker inspect e6b8e0df006f | grep "IPAddress"
 
 DOCKER BUILD/TAG/PUSH (sample fe-crud)
+
+------------------------------------------------------------------------------------------
 sudo docker build -t fe-crud .
-docker tag 004192110c99 jomimart13/fe-crud:latest
+docker tag 443e99b9451a jomimart13/fe-crud:latest
 docker push jomimart13/fe-crud:latest
 
+docker build -t fe-crud .
+docker tag fe-crud:latest hnldockerregistry.azurecr.io/fe-crud:latest
+docker push hnldockerregistry.azurecr.io/fe-crud:latest
+
+------------------------------------------------------------------------------------------
+
 sudo docker build -t fe-mq-publisher .
-docker tag daa64fa9238d jomimart13/fe-mq-publisher:latest
+docker tag 5e43d6c3ac65 jomimart13/fe-mq-publisher:latest
 docker push jomimart13/fe-mq-publisher:latest
 
+docker build -t fe-mq-publisher .
+docker tag fe-mq-publisher:latest hnldockerregistry.azurecr.io/fe-mq-publisher:latest
+docker push hnldockerregistry.azurecr.io/fe-mq-publisher:latest
+
+------------------------------------------------------------------------------------------
+
 sudo docker build -t fe-ingest-data .
-docker tag 5d999ebe29c0 jomimart13/fe-ingest-data:latest
+docker tag ee1fd2ade250 jomimart13/fe-ingest-data:latest
 docker push jomimart13/fe-ingest-data:latest
 
+docker build -t fe-ingest-data .
+docker tag fe-ingest-data:latest hnldockerregistry.azurecr.io/fe-ingest-data:latest
+docker push hnldockerregistry.azurecr.io/fe-ingest-data:latest
+
+------------------------------------------------------------------------------------------
+
 sudo docker build -t fe-listener-data .
-docker tag 9731686fad1c jomimart13/fe-listener-data:latest
+docker tag 5cdfe3afdf8e jomimart13/fe-listener-data:latest
 docker push jomimart13/fe-listener-data:latest
 
+docker build -t fe-listener-data .
+docker tag fe-listener-data:latest hnldockerregistry.azurecr.io/fe-listener-data:latest
+docker push hnldockerregistry.azurecr.io/fe-listener-data:latest
+
+------------------------------------------------------------------------------------------
+
 sudo docker build -t fe-elastic-crud .
-docker tag 9731686fad1c jomimart13/fe-elastic-crud:latest
+docker tag b333a33b4beb jomimart13/fe-elastic-crud:latest
 docker push jomimart13/fe-elastic-crud:latest
 
+docker build -t fe-elastic-crud .
+docker tag fe-elastic-crud:latest hnldockerregistry.azurecr.io/fe-elastic-crud:latest
+docker push hnldockerregistry.azurecr.io/fe-elastic-crud:latest
 
-sudo docker build -t samplemq .
-docker tag ec036b567c3d jomimart13/samplemq:latest
-docker push jomimart13/samplemq:latest
+------------------------------------------------------------------------------------------
 
 
+sudo docker build -t fe-listener-db .
+docker tag 2539b2005739 jomimart13/fe-listener-db:latest
+docker push jomimart13/fe-listener-db:latest
+
+docker build -t fe-listener-db .
+docker tag fe-listener-db:latest hnldockerregistry.azurecr.io/fe-listener-db:latest
+docker push hnldockerregistry.azurecr.io/fe-listener-db:latest
+
+------------------------------------------------------------------------------------------
+
+
+sudo docker build -t fe-invoice-dgi .
+docker tag 2539b2005739 jomimart13/fe-invoice-dgi:latest
+docker push jomimart13/fe-invoice-dgi:latest
+
+docker build -t fe-invoice-dgi .
+docker tag fe-invoice-dgi:latest hnldockerregistry.azurecr.io/fe-invoice-dgi:latest
+docker push hnldockerregistry.azurecr.io/fe-invoice-dgi:latest
+
+------------------------------------------------------------------------------------------
+
+
+sudo docker build -t fe-pac-as-ws .
+docker tag c52422fca0d9 jomimart13/fe-pac-as-ws:latest
+docker push jomimart13/fe-pac-as-ws:latest
+
+docker build -t fe-pac-as-ws .
+docker tag fe-pac-as-ws:latest hnldockerregistry.azurecr.io/fe-pac-as-ws:latest
+docker push hnldockerregistry.azurecr.io/fe-pac-as-ws:latest
+
+
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+
+AWS ECR
+
+sudo docker build -t fe-crud .
+docker tag fe-crud:latest 482627483434.dkr.ecr.us-east-1.amazonaws.com/fe-crud:latest
+aws ecr get-login-password | docker login --username AWS --password-stdin 482627483434.dkr.ecr.us-east-1.amazonaws.com
+docker push 482627483434.dkr.ecr.us-east-1.amazonaws.com/fe-crud:latest
+
+
+sudo docker build -t pac-as-ws .
+docker tag pac-as-ws:latest 482627483434.dkr.ecr.us-east-1.amazonaws.com/pac-as-ws:latest
+aws ecr get-login-password | docker login --username AWS --password-stdin 482627483434.dkr.ecr.us-east-1.amazonaws.com
+docker push 482627483434.dkr.ecr.us-east-1.amazonaws.com/pac-as-ws:latest
+
+sudo docker build -t sample-repo .
+docker tag sample-repo:latest 482627483434.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
+aws ecr get-login-password | docker login --username AWS --password-stdin 482627483434.dkr.ecr.us-east-1.amazonaws.com
+docker push 482627483434.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
+
+
+
+hnldockerregistry.azurecr.io/aludraapi.fac.microservice:25914
+
+docker login hnldockerregistry.azurecr.io -u hnldockerRegistry -p IuqzId5c4MTThkN3Na/hicUlxE9sm0jG
 

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-ingest-data
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fe-ingest-data
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fe-ingest-data
+    spec:
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: efs-claim  
+      containers:
+      - image: hnldockerregistry.azurecr.io/fe-ingest-data:latest
+        imagePullPolicy: Always
+        name: fe-ingest-data
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"        
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        #command: ["/bin/sh"]
+        #args: ["-c", "while true; do date >> /var/nfs/general/filepu.txt; sleep 5; done"]    
+        ports:
+        - containerPort: 8080
+        env:
+            - name: location.tosave
+              value: /data/
+            - name: invoice.api.url
+              value: http://fe-crud-service.default.svc.cluster.local/invoice/store
+            - name: queue.publish.api
+              value: http://fe-mq-publisher-service.default.svc.cluster.local/publish/fe              
+
