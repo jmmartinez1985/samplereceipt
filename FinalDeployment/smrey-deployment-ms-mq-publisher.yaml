@@ -45,6 +45,6 @@ spec:
             - name: queue.rejected
               value: queue.fe.input.rejected              
             - name: queue.db.name
-              value: queue.db             
-              
-                            
+              value: queue.db    
+      imagePullSecrets:
+      - name: azrcrsecret   
