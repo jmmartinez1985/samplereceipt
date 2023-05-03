@@ -18,7 +18,7 @@ spec:
           persistentVolumeClaim:
             claimName: pvc-nfs-pv-fe-data
       containers:
-        - image: hnldockerregistry.azurecr.io/fe-listener-data:latest
+        - image: soportehypernovalabs/fe-listener-data:latest
           imagePullPolicy: Always
           name: fe-mq-listener
           resources:

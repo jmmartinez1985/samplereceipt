@@ -14,7 +14,7 @@ spec:
         app: fe-crud
     spec:
       containers:
-      - image: hnldockerregistry.azurecr.io/fe-crud:latest
+      - image: soportehypernovalabs/fe-crud:latest
         imagePullPolicy: Always
         name: fe-crud
         resources:

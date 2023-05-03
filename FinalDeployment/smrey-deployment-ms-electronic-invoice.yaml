@@ -14,7 +14,7 @@ spec:
         app: fe-invoice-dgi
     spec:
       containers:
-        - image: hnldockerregistry.azurecr.io/fe-invoice-dgi:latest
+        - image: soportehypernovalabs/fe-invoice-dgi:latest
           imagePullPolicy: Always
           name: fe-invoice-dgi
           resources:

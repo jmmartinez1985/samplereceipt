@@ -18,7 +18,7 @@ spec:
         persistentVolumeClaim:
           claimName: efs-claim  
       containers:
-      - image: hnldockerregistry.azurecr.io/fe-ingest-data:latest
+      - image: soportehypernovalabs/fe-ingest-data:latest
         imagePullPolicy: Always
         name: fe-ingest-data
         resources:
