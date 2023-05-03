@@ -13,7 +13,7 @@ docker push hnldockerregistry.azurecr.io/fe-crud:latest
 ------------------------------------------------------------------------------------------
 
 sudo docker build -t fe-mq-publisher .
-docker tag 5e43d6c3ac65 jomimart13/fe-mq-publisher:latest
+docker tag fe-mq-publisher:latest jomimart13/fe-mq-publisher:latest
 docker push jomimart13/fe-mq-publisher:latest
 
 docker build -t fe-mq-publisher .
@@ -108,3 +108,9 @@ docker push 482627483434.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
 
 
 
+docker login hnldockerregistry.azurecr.io -u hnldockerRegistry -p IuqzId5c4MTThkN3Na/hicUlxE9sm0jG
+
+
+hnldockerregistry.azurecr.io.azurecr.io
+hnldockerRegistry
+IuqzId5c4MTThkN3Na/hicUlxE9sm0jG
