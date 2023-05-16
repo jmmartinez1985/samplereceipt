@@ -14,7 +14,7 @@ spec:
         app: fe-invoice-dgi
     spec:
       containers:
-        - image: soportehypernovalabs/fe-invoice-dgi:latest
+        - image: jomimart13/fe-invoice-dgi:latest
           imagePullPolicy: Always
           name: fe-invoice-dgi
           resources:

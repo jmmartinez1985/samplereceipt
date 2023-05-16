@@ -8,7 +8,7 @@ spec:
     apiVersion: apps/v1 
     kind: Deployment 
     name: fe-ingest-data 
-  minReplicas: 1 
+  minReplicas: 2 
   maxReplicas: 5 
   metrics: 
   - type: Resource
@@ -19,12 +19,4 @@ spec:
         averageUtilization: 50 
   behavior: 
     scaleDown:
-      stabilizationWindowSeconds: 300
-      policies:
-      - type: Pods
-        value: 4
-        periodSeconds: 60
-      - type: Percent
-        value: 10
-        periodSeconds: 60
-      selectPolicy: Max               
+      stabilizationWindowSeconds: 300           

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-elastic-crud
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fe-elastic-crud
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fe-elastic-crud
+    spec:
+      containers:
+      - image: jomimart13/fe-elastic-crud:latest
+        imagePullPolicy: Always
+        name: fe-elastic-crud
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"           
+        ports:
+        - containerPort: 8080
+        env:
+            - name: spring.elasticsearch.rest.host
+              value: 172.20.239.26
+            - name: spring.elasticsearch.rest.scheme
+              value: http
+            - name: spring.elasticsearch.rest.connection-timeout
+              value: 1s
+            - name: spring.elasticsearch.rest.read-timeout
+              value: 1m
+            - name: spring.elasticsearch.rest.username
+              value: elastic
+            - name: spring.elasticsearch.rest.password
+              value:                                         

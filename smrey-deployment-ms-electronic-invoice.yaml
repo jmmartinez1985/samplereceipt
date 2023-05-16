@@ -38,7 +38,7 @@ spec:
             - name: aludra.company
               value: INMO
             - name: flagstatsIngest
-              value: "true"
+              value: "false"
             - name: k8s.wsstatsIngest
               value: http://fe-elastic-crud-service.default.svc.cluster.local/stats/ingest
             - name: k8s.wsinvoiceStore
