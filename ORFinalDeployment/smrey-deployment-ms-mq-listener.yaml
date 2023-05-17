@@ -53,6 +53,8 @@ spec:
               value: http://fe-mq-publisher-service.default.svc.cluster.local/publish/db
             - name: k8s.wsupdateinvoice
               value: http://fe-crud-service.default.svc.cluster.local/invoice/patch
+            - name: k8s.wspubliserrejected
+              value: http://fe-mq-publisher-service.default.svc.cluster.local/publish/rejected
             - name: flagstatsIngest
               value: "false"
             - name: k8s.wsstatsIngest
