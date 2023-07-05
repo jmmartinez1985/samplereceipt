@@ -9,31 +9,33 @@ microk8s enable hostpath-storage dns community dashboard
 
 microk8s enable helm3
 
+
 RABBIT MQ
 
 https://github.com/bitnami/charts/tree/master/bitnami/rabbitmq/#installing-the-chart
 
 microk8s helm3 repo add bitnami https://charts.bitnami.com/bitnami
 
-microk8s helm3 install rabbitmq bitnami/rabbitmq \
+microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq \
     --set replicaCount=2 
+
+microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq \
+--set replicaCount=2 \
+--set communityPlugins="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez"
+
+
+microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq \
+--set replicaCount=2 \
+--set communityPlugins="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez" \
+--set extraPlugins="rabbitmq-delayed-message-exchange"
+
+rabbitmq-plugins list
+
+rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+
+kubectl exec --stdin --tty rabbitmq-0  -- /bin/sh
+kubectl exec --stdin --tty aludra-mdl18-5949ff6b4c-f5l5v  -- /bin/sh
 	
-microk8s helm3 install rabbitmq bitnami/rabbitmq --version 8.24.13 \
-    --set replicaCount=1 \
-    --set auth.user=admin \
-    --set auth.password=password 
-
-microk8s helm3 upgrade rabbitmq bitnami/rabbitmq --version 8.24.13 \
-    --set replicaCount=2 
-    
-microk8s helm3 install rabbitmq bitnami/rabbitmq --version 8.24.13
-
-microk8s kubectl port-forward --namespace default svc/rabbitmq 15672:15672
-
-microk8s helm3 delete rabbitmq
-
-password rabbitmq: pOJ0YZOj9j
-password rabbitmq eks: tc4tPWbyVl
 
 kubectl get secret --namespace default rabbitmq -o jsonpath="{.data}"
 echo "Password      : $(microk8s kubectl get secret --namespace default rabbitmq -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)"
@@ -81,10 +83,8 @@ microk8s enable metallb
 
 NGINX CONTROLLER
 
-microk8s helm3 repo add nginx-stable https://helm.nginx.com/stable
-microk8s helm3 repo update
-microk8s helm3 install nginx nginx-stable/nginx-ingress
-microk8s helm3 delete nginx
+microk8s helm3 install nginx oci://registry-1.docker.io/bitnamicharts/nginx-ingress-controller
+
 
 METRICS SERVER
 microk8s enable metrics-server
@@ -176,3 +176,6 @@ microk8s helm3 delete grafana
 
 kubectl get hpa fe-crud --watch
 kubectl get hpa fe-crud -o yaml
+
+
+

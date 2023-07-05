@@ -18,7 +18,7 @@ spec:
           persistentVolumeClaim:
             claimName: pvc-nfs-pv-fe-data
       containers:
-        - image: soportehypernovalabs/fe-listener-data:latest
+        - image: soportehypernovalabs/fe-listener-data:latest-v.1.2
           imagePullPolicy: Always
           name: fe-mq-listener
           resources:

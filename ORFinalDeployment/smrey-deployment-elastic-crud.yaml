@@ -14,7 +14,7 @@ spec:
         app: fe-elastic-crud
     spec:
       containers:
-      - image: jomimart13/fe-elastic-crud:latest
+      - image: soportehypernovalabs/fe-elastic-crud:latest
         imagePullPolicy: Always
         name: fe-elastic-crud
         resources:

@@ -13,14 +13,14 @@ spec:
   rules:
   - host: cafe.smrey.com
     http:
-      paths: 
+      paths:
       - path: /
         pathType: Exact
         backend:
           service:
             name: echoserver
             port:
-              number: 80                      
+              number: 80
       - path: /invoice/store
         pathType: Exact
         backend:
@@ -34,7 +34,7 @@ spec:
           service:
             name: fe-crud-service
             port:
-              number: 80              
+              number: 80
       - path: /invoice/element
         pathType: Exact
         backend:
@@ -48,21 +48,21 @@ spec:
           service:
             name: fe-crud-service
             port:
-              number: 80                                                                   
+              number: 80
       - path: /publish/fe
         pathType: Exact
         backend:
           service:
             name: fe-mq-publisher-service
             port:
-              number: 80  
+              number: 80
       - path: /publish/db
         pathType: Exact
         backend:
           service:
             name: fe-mq-publisher-service
             port:
-              number: 80                             
+              number: 80
       - path: /invoice/ingest
         pathType: Exact
         backend:
@@ -83,11 +83,25 @@ spec:
           service:
             name: fe-elastic-crud-service
             port:
-              number: 80      
+              number: 80
       - path: /fe/direct
         pathType: Exact
         backend:
           service:
-            name: fe-invoice-dgi-service  
+            name: fe-invoice-dgi-service
+            port:
+              number: 80
+      - path: /dgi/qrcode
+        pathType: Exact
+        backend:
+          service:
+            name: fe-qrcode-service
+            port:
+              number: 80
+      - path: /dgi/register
+        pathType: Exact
+        backend:
+          service:
+            name: fe-qrcode-service
             port:
               number: 80

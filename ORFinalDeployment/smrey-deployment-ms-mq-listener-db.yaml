@@ -14,7 +14,7 @@ spec:
         app: fe-mq-listener-db
     spec:
       containers:
-        - image: jomimart13/fe-listener-db:latest
+        - image: soportehypernovalabs/fe-listener-db:latest
           imagePullPolicy: Always
           name: fe-mq-listener-db
           resources:
