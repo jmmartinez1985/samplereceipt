@@ -71,7 +71,11 @@ microk8s helm3 install phpmyadmin bitnami/phpmyadmin
 kubectl port-forward --namespace default svc/phpmyadmin 80:80
 kubectl port-forward --namespace default svc/echoserver 8082:80
 
-microk8s helm3 delete helm-name 
+
+
+###MONGO DB 
+microk8s helm3 install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb --set auth.enabled=false --set architecture="replicaset"
+
 	
 Destroy everything
 

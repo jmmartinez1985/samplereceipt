@@ -32,7 +32,7 @@ spec:
             - name: PATH_POST
               value: /dgi/register
             - name: CONNECTION_STRING
-              value: mongodb://mongodb.default.svc.cluster.local:27017/bitacora?retryWrites=true&w=majority
+              value: mongodb://mongodb-headless.default.svc.cluster.local:27017/bitacora?retryWrites=true&w=majority
             - name: DATABASE
               value: feintermedia
             - name: TABLENAME
