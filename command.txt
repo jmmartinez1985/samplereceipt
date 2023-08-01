@@ -51,7 +51,6 @@ microk8s helm3 upgrade mysql bitnami/mysql \
 	--set architecture=replication
 
 
-secondary.replicaCount
 	
 CLIENTE MYSQL
 
@@ -75,6 +74,9 @@ kubectl port-forward --namespace default svc/echoserver 8082:80
 
 ###MONGO DB 
 microk8s helm3 install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb --set auth.enabled=false --set architecture="replicaset"
+
+
+kubectl delete -f smrey-service-api-ingest.yaml -f smrey-service-electronic-invoice.yaml -f smrey-service-qr-crud.yaml
 
 	
 Destroy everything

@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-sa-name
+  namespace: default
+
+---
+
+# 2. Create a role
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: my-completed-jobs-cleaner-role
+rules:
+- apiGroups: [""]
+  resources: ["jobs,pods"]
+  verbs: ["list", "delete"]
+
+---
+
+# 3. Attach the role to the service account
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: my-completed-jobs-cleaner-rolebinding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: my-completed-jobs-cleaner-role
+subjects:
+- kind: ServiceAccount
+  name: my-sa-name
+  namespace: default
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: jobs-cleanup
+spec:
+  schedule: "*/59 * * * *"
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: my-sa-name
+          containers:
+          - name: kubectl-container
+            image: bitnami/kubectl:latest
+            # I'm using bitnami kubectl, because the suggested kubectl image didn't had the `field-selector` option
+            command: ["sh", "-c", "kubectl delete pods -l app=fe-qrcode"]
+          restartPolicy: Never
