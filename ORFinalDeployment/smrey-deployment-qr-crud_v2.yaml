@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-qrcode
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fe-qrcode
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fe-qrcode
+    spec:
+      containers:
+      - image: soportehypernovalabs/fe-qrcode-v2:latest
+        imagePullPolicy: Always
+        name: fe-qrcode
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "725m"        
+        ports:
+        - containerPort: 8080
+        env:
+            - name: PATH_GET
+              value: /dgi/qrcode
+            - name: PATH_POST
+              value: /dgi/register
+            - name: CONNECTION_STRING_MONGODB
+              value: mongodb://mongodb-headless.default.svc.cluster.local:27017/bitacora?retryWrites=true&w=majority
+            - name: DATABASE
+              value: feintermedia           
+            - name: TABLENAME
+              value: bitacora            
+            - name: PAGE_DEFAULT
+              value: https://dgi-fep.mef.gob.pa/
+            - name: QUEUE_RABBITMQ
+              value: queue.bitacora
+            - name: QUEUE_RABBITMQ_DEAD
+              value: queue.bitacora.dead
+            - name: RABBITMQ_HOST
+              value: rabbitmq.default.svc.cluster.local
+            - name: RABBITMQ_USERNAME
+              value: user
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: rabbitmq-password

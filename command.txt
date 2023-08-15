@@ -44,12 +44,13 @@ echo "Password      : $(microk8s kubectl get secret --namespace default rabbitmq
 MYSQL
 
 microk8s helm3 install mysql bitnami/mysql \
-	--set architecture=replication
+	--set architecture=replication \
+	--set primary.persistence.size=50Gi \
+	--set secondary.persistence.size=50Gi
 
 	
 microk8s helm3 upgrade mysql bitnami/mysql \
 	--set architecture=replication
-
 
 	
 CLIENTE MYSQL
@@ -61,6 +62,15 @@ kubectl run mysql-client --rm --tty -i --restart='Never' --image  docker.io/bitn
 
 mysql -h mysql-primary.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
 
+mysql -h mysql-secondary.default.svc.cluster.local -uroot -p"$MYSQL_ROOT_PASSWORD"
+
+kubectl exec mysql-primary-0 -- mysqldump  -uroot -p"$MYSQL_ROOT_PASSWORD" db_name -p > db_name_dump_primary.sql > ./db_name_dump_primary.sql
+
+kubectl exec --stdin --tty mysql-primary-0 -- bash
+
+mysqldump -u root db_control_fe -p > db_control_fe_dump.sql
+
+
 
 kubectl port-forward --namespace default svc/mysql-primary 3306:3306
 
@@ -70,14 +80,7 @@ microk8s helm3 install phpmyadmin bitnami/phpmyadmin
 kubectl port-forward --namespace default svc/phpmyadmin 80:80
 kubectl port-forward --namespace default svc/echoserver 8082:80
 
-
-
-###MONGO DB 
-microk8s helm3 install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb --set auth.enabled=false --set architecture="replicaset"
-
-
-kubectl delete -f smrey-service-api-ingest.yaml -f smrey-service-electronic-invoice.yaml -f smrey-service-qr-crud.yaml
-
+microk8s helm3 delete helm-name 
 	
 Destroy everything
 
@@ -184,4 +187,57 @@ kubectl get hpa fe-crud --watch
 kubectl get hpa fe-crud -o yaml
 
 
+kubectl -n default exec mysql-primary-0 -- df -ah
+kubectl exec -it mysql-primary-0 -- bin/bash
 
+
+MB
+SELECT (data_length+index_length)/power(1024,2) tablesize_mb
+FROM information_schema.tables
+WHERE table_schema='db_control_fe' and table_name='invoice';
+
+KB
+SELECT (data_length+index_length)/power(1024,1) tablesize_kb
+FROM information_schema.tables
+WHERE table_schema='db_control_fe' and table_name='invoice';
+
+GB 
+SELECT (data_length+index_length)/power(1024,3) tablesize_gb
+FROM information_schema.tables
+WHERE table_schema='db_control_fe' and table_name='invoice';
+
+SELECT
+  TABLE_NAME AS `Table`,
+  ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024) AS `Size (MB)`
+FROM
+  information_schema.TABLES
+WHERE
+  TABLE_SCHEMA = "db_control_fe"
+ORDER BY
+  (DATA_LENGTH + INDEX_LENGTH)
+DESC;
+
+
+echo Username: root
+  MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default mysql -o jsonpath="{.data.mysql-root-password}" | base64 -d)
+
+kubectl exec mysql-primary-0 -- mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" db_control_fe > dumpfeyuli.sql
+kubectl exec mysql-secondary-0 -- mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" db_control_fe > dumpfesec.sql
+
+
+kubectl exec -it mysql-primary-0 -- mysql -u root -p"$MYSQL_ROOT_PASSWORD" db_control_fe < dumpfeyuli.sql
+
+kubectl exec -it mysql-primary-0 -- mysql -u root -p"$MYSQL_ROOT_PASSWORD" db_control_fe < mysql-secondary-0_db_control_fe.sql
+
+
+
+env:
+            - name: rabbithost
+              value: rabbitmq.default.svc.cluster.local
+            - name: rabbituser
+              value: user
+            - name: rabbitpass
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq
+                  key: rabbitmq-password
