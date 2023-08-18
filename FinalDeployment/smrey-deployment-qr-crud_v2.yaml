@@ -23,7 +23,7 @@ spec:
             cpu: "250m"
           limits:
             memory: "500Mi"
-            cpu: "725m"        
+            cpu: "725m"
         ports:
         - containerPort: 8080
         env:
@@ -32,11 +32,11 @@ spec:
             - name: PATH_POST
               value: /dgi/register
             - name: CONNECTION_STRING_MONGODB
-              value: mongodb://mongodb-headless.default.svc.cluster.local:27017/bitacora?retryWrites=true&w=majority
+              value: mongodb://mongodbha-headless.default.svc.cluster.local:27017/bitacora?retryWrites=true&w=majority
             - name: DATABASE
-              value: feintermedia           
+              value: feintermedia
             - name: TABLENAME
-              value: bitacora            
+              value: bitacora
             - name: PAGE_DEFAULT
               value: https://dgi-fep.mef.gob.pa/
             - name: QUEUE_RABBITMQ
@@ -52,3 +52,7 @@ spec:
                 secretKeyRef:
                   name: rabbitmq
                   key: rabbitmq-password
+            - name: RABBITMQ_PORT
+              value: '5672'
+            - name: RABBITMQ_OPTIONS
+              value: ?heartbeat=30&connection_timeout=120

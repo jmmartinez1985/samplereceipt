@@ -23,11 +23,9 @@ microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitm
 --set replicaCount=2 \
 --set communityPlugins="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez"
 
-
 microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq \
 --set replicaCount=2 \
---set communityPlugins="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez" \
---set extraPlugins="rabbitmq-delayed-message-exchange"
+--set communityPlugins="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.12.0/rabbitmq_delayed_message_exchange-3.12.0.ez"
 
 rabbitmq-plugins list
 
