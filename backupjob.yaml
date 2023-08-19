@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name:  my-scheduled-backup
+  namespace: default
+
+---
+
+# 2. Create a role
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: mysql-schedule-backup-role
+rules:
+- apiGroups: [""]
+  resources: ["jobs,pods"]
+  verbs: ["list", "delete", "exec", "apply"]
+- apiGroups:
+    - extensions
+  resources:
+    - deployments
+  verbs:
+    - get
+    - list
+    - create
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+
+---
+
+# 3. Attach the role to the service account
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mysql-schedule-backup-rolebinding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: mysql-schedule-backup-role
+subjects:
+- kind: ServiceAccount
+  name: my-scheduled-backup
+  namespace: default
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cronjob-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: microk8s-hostpath
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/home/usrfe/backups"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cronjob-pv-claim
+spec:
+  storageClassName: microk8s-hostpath
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-schedule-backup
+spec:
+  schedule: "@weekly"
+  failedJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: cronjob-pv-claim
+          serviceAccountName: my-scheduled-backup
+          containers:
+          - command:
+            - /bin/sh
+            - -c
+            - |
+              MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default mysql -o jsonpath='{.data.mysql-root-password}' | base64 -d)
+              echo $MYSQL_ROOT_PASSWORD
+              kubectl exec mysql-primary-0 -- mysqldump -u root -p$MYSQL_ROOT_PASSWORD db_control_fe > /backups/backupmysql-$(date +'%d-%m-%Y').sql
+            name: kubectl-container
+            image: bitnami/kubectl:latest
+            volumeMounts:
+              - name: backup
+                mountPath: /backups
+          restartPolicy: Never
+                    
