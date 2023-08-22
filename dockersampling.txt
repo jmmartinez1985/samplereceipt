@@ -1,3 +1,36 @@
+FROM adoptopenjdk/openjdk11:jre-11.0.11_9-alpine
+
+LABEL Jose Martinez <stn_rules@hotmail.com>
+
+# Get Jar file
+ARG JAR_FILE=target/ms-ibm-mq-*.jar
+
+# cd /workspace/app
+WORKDIR /workspace/app
+
+# cp target/*.jar /workspace/app/app.jar
+COPY ${JAR_FILE} app.jar
+
+# java -jar /opt/app/app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
+
+
+docker network create my-net
+
+docker run -it --rm --network my-net --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management 
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management 
+user/pass: guest/guest
+
+docker run -it --rm -e "spring.rabbitmq.host=172.18.0.2" --network my-net --name mq-publisher -p 8080:9092 jomimart13/fe-mq-publisher
+
+docker run --name mysqlcrud --network my-net -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+docker run --name mysqlsle -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+docker pull phpmyadmin/phpmyadmin:latest
+
+docker run --name myphpmycrud -d --link mysqlcrud:db -p 8081:80 phpmyadmin/phpmyadmin
+docker run --name myphpmycrud  --network my-net -d --link mysqlcrud:db -p 8081:80 phpmyadmin/phpmyadmin
+
+docker inspect e6b8e0df006f | grep "IPAddress"
 
 DOCKER BUILD/TAG/PUSH (sample fe-crud)
 
@@ -31,10 +64,6 @@ docker tag fe-ingest-data:latest hnldockerregistry.azurecr.io/fe-ingest-data:lat
 docker push hnldockerregistry.azurecr.io/fe-ingest-data:latest
 
 ------------------------------------------------------------------------------------------
-
-sudo docker build -t fe-listener-data .
-docker tag 5cdfe3afdf8e jomimart13/fe-listener-data:latest
-docker push jomimart13/fe-listener-data:latest
 
 docker build -t fe-listener-data .
 docker tag fe-listener-data:latest hnldockerregistry.azurecr.io/fe-listener-data:latest
@@ -72,6 +101,9 @@ docker build -t fe-invoice-dgi .
 docker tag fe-invoice-dgi:latest hnldockerregistry.azurecr.io/fe-invoice-dgi:latest
 docker push hnldockerregistry.azurecr.io/fe-invoice-dgi:latest
 
+docker build -t fe-invoice-dgi .
+docker tag fe-invoice-dgi:latest-v1.1 hnldockerregistry.azurecr.io/fe-invoice-dgi:latest-v1.1
+docker push hnldockerregistry.azurecr.io/fe-invoice-dgi:latest-v1.1
 ------------------------------------------------------------------------------------------
 
 
@@ -80,8 +112,16 @@ docker tag c52422fca0d9 jomimart13/fe-pac-as-ws:latest
 docker push jomimart13/fe-pac-as-ws:latest
 
 docker build -t fe-pac-as-ws .
-docker tag fe-pac-as-ws:latest hnldockerregistry.azurecr.io/fe-pac-as-ws:latest
-docker push hnldockerregistry.azurecr.io/fe-pac-as-ws:latest
+docker tag a2e495f1c4c8f80b2ab202aa90ae475dd77a38cbf437f839ee9951b0817b0415  soportehypernovalabs/fe-pac-as-ws:qa-version1.4
+docker push soportehypernovalabs/fe-pac-as-ws:qa-version1.4
+
+ARM to AMD
+docker build --platform linux/amd64 -t fe-pac-as-ws . 
+docker tag 914d64405fbef3e07b5e06fdac38dbbf1fe1656d725d9ed99ad1dd662ac5bba6 soportehypernovalabs/fe-pac-as-ws:qa-version
+docker push soportehypernovalabs/fe-pac-as-ws:qa-version 
+
+docker run --platform linux/amd64 -d -p 8081:8081 soportehypernovalabs/fe-pac-as-ws:qa-version
+
 
 
 ------------------------------------------------------------------------------------------
@@ -108,9 +148,26 @@ docker push 482627483434.dkr.ecr.us-east-1.amazonaws.com/sample-repo:latest
 
 
 
+hnldockerregistry.azurecr.io/aludraapi.fac.microservice:25914
+
+docker login hnldockerregistry.azurecr.io -u hnldockerRegistry -p IuqzId5c4MTThkN3Na/hicUlxE9sm0jG
+
 docker login hnldockerregistry.azurecr.io -u hnldockerRegistry -p IuqzId5c4MTThkN3Na/hicUlxE9sm0jG
 
 
 hnldockerregistry.azurecr.io.azurecr.io
 hnldockerRegistry
 IuqzId5c4MTThkN3Na/hicUlxE9sm0jG
+
+
+soportehypernovalabs
+Adminf08*
+
+
+
+
+
+
+sudo docker build -t mongodemo .
+docker tag 8a1b65f3899a3909dcf995df49efe2817f2b105b19e4874bcf95dbf1fd7cf19e jomimart13/mongodemo:latest
+docker push jomimart13/mongodemo:latest
