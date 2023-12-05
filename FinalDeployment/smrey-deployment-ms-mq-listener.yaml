@@ -19,7 +19,7 @@ spec:
             claimName: pvc-nfs-pv-fe-data
       containers:
         - image: soportehypernovalabs/fe-listener-data:latest-v.1.2
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           name: fe-mq-listener
           resources:
             requests:

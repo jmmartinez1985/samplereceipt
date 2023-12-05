@@ -19,7 +19,7 @@ spec:
           claimName: pvc-nfs-pv-fe-data 
       containers:
       - image: soportehypernovalabs/fe-ingest-data:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: fe-ingest-data
         resources:
           requests:

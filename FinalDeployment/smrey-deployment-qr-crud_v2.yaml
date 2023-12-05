@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - image: soportehypernovalabs/fe-qrcode-v2:version1.0
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: fe-qrcode
         resources:
           requests:
