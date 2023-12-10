@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fe-pac-method-short-service
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  type: LoadBalancer      
+  selector:
+    app: fe-pac-method-ws-short

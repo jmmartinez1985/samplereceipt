@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-pac-method-ws-short
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fe-pac-method-ws-short
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fe-pac-method-ws-short
+    spec:
+      containers:
+      - image: soportehypernovalabs/fe-pac-as-ws:shortqr-pr-version
+        imagePullPolicy: IfNotPresent
+        name: fe-pac-method-ws-short
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"        
+        ports:
+        - containerPort: 8080
