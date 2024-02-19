@@ -14,7 +14,7 @@ spec:
         app: fe-mq-publisher
     spec:
       containers:
-      - image: jomimart13/fe-mq-publisher:latest
+      - image: soportehypernovalabs/fe-mq-publisher:latest
         imagePullPolicy: Always
         name: fe-mq-publisher
         resources:
