@@ -1,15 +1,15 @@
 apiVersion: autoscaling/v2 
 kind: HorizontalPodAutoscaler
 metadata:
-  name: fe-hpa-pac-method-ws-short 
+  name: fe-hpa-pac-method-ws-long 
   namespace: default
 spec:
   scaleTargetRef:
     apiVersion: apps/v1 
     kind: Deployment 
-    name: fe-pac-method-ws-short 
+    name: fe-pac-method-ws-long 
   minReplicas: 1 
-  maxReplicas: 2
+  maxReplicas: 3 
   metrics: 
   - type: Resource
     resource:

@@ -10,4 +10,4 @@ spec:
       protocol: TCP
   type: LoadBalancer
   selector:
-    app: fe-qrcod
+    app: fe-qrcode

@@ -1,15 +1,15 @@
 apiVersion: autoscaling/v2 
 kind: HorizontalPodAutoscaler
 metadata:
-  name: fe-hpa-pac-method-ws-short 
+  name: fe-hpa-invoice-dgi
   namespace: default
 spec:
   scaleTargetRef:
     apiVersion: apps/v1 
     kind: Deployment 
-    name: fe-pac-method-ws-short 
-  minReplicas: 1 
-  maxReplicas: 2
+    name: fe-invoice-dgi
+  minReplicas: 2
+  maxReplicas: 5 
   metrics: 
   - type: Resource
     resource:
@@ -19,4 +19,4 @@ spec:
         averageUtilization: 50 
   behavior: 
     scaleDown:
-      stabilizationWindowSeconds: 100           
+      stabilizationWindowSeconds: 100      
