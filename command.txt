@@ -16,6 +16,7 @@ https://github.com/bitnami/charts/tree/master/bitnami/rabbitmq/#installing-the-c
 
 microk8s helm3 repo add bitnami https://charts.bitnami.com/bitnami
 
+
 microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq \
     --set replicaCount=2 
 
@@ -27,12 +28,23 @@ microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitm
 --set replicaCount=2 \
 --set communityPlugins="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.12.0/rabbitmq_delayed_message_exchange-3.12.0.ez"
 
+
+microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq --version=11.15.3 \
+--set replicaCount=2 \
+--set communityPlugins="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez" \
+--set extraPlugins="rabbitmq-delayed-message-exchange"
+
+
+https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.12.0/rabbitmq_delayed_message_exchange-3.12.0.ez
+
 rabbitmq-plugins list
+
+kubectl exec --stdin --tty rabbitmq-0  -- /bin/sh
 
 rabbitmq-plugins enable rabbitmq_delayed_message_exchange
 
-kubectl exec --stdin --tty rabbitmq-0  -- /bin/sh
-kubectl exec --stdin --tty aludra-mdl18-5949ff6b4c-f5l5v  -- /bin/sh
+
+
 	
 
 kubectl get secret --namespace default rabbitmq -o jsonpath="{.data}"
@@ -41,14 +53,22 @@ echo "Password      : $(microk8s kubectl get secret --namespace default rabbitmq
 
 MYSQL
 
-microk8s helm3 install mysql bitnami/mysql \
+microk8s helm3 install mysql bitnami/mysql --version 9.10.1 \
 	--set architecture=replication \
 	--set primary.persistence.size=50Gi \
 	--set secondary.persistence.size=50Gi
 
+microk8s helm3 install mysql oci://registry-1.docker.io/bitnamicharts/mysql \
+	--set architecture=replication \
+	--set primary.persistence.size=50Gi \
+	--set secondary.persistence.size=50Gi
+
+
 	
-microk8s helm3 upgrade mysql bitnami/mysql \
-	--set architecture=replication
+microk8s helm3 install mysql bitnami/mysql \
+	--set architecture=replication  \
+	--set primary.persistence.size=8Gi \
+	--set secondary.persistence.size=8Gi
 
 	
 CLIENTE MYSQL
@@ -71,6 +91,8 @@ mysqldump -u root db_control_fe -p > db_control_fe_dump.sql
 
 
 kubectl port-forward --namespace default svc/mysql-primary 3306:3306
+kubectl port-forward --namespace default svc/rabbitmq 15672:15672
+
 
 
 microk8s helm3 install phpmyadmin bitnami/phpmyadmin
@@ -88,9 +110,17 @@ microk8s kubectl delete all --all -n rabbitmq-system
 METALLB
 microk8s enable metallb
 
+192.168.111.35-192.168.111.36,192.168.111.45-192.168.111.45
+
 NGINX CONTROLLER
 
 microk8s helm3 install nginx oci://registry-1.docker.io/bitnamicharts/nginx-ingress-controller
+microk8s helm3 delete nginx oci://registry-1.docker.io/bitnamicharts/nginx-ingress-controller
+
+
+MONGODB
+microk8s helm3 install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb --set replicaCount=2 --set architecture="replicaset" --set persistence.size="8Gi" --set auth.enabled="false"
+
 
 
 METRICS SERVER
@@ -147,8 +177,8 @@ sudo apt update
 sudo apt-get install nfs-common -y
 sudo mkdir -p /nfs/general
 sudo mkdir -p /nfs/home
-sudo mount 192.168.111.25:/var/nfs/general /nfs/general
-sudo mount 192.168.111.25:/home /nfs/home
+sudo mount 192.168.111.48:/var/nfs/general /nfs/general
+sudo mount 192.168.111.48:/home /nfs/home
 df -h
 du -sh /nfs/home
 du -sh /nfs/general
@@ -159,8 +189,8 @@ umount /mnt
 sudo touch /var/nfs/general/general.test
 
 sudo nano /etc/fstab
-192.168.111.25:/var/nfs/general    /nfs/general   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
-192.168.111.25:/home               /nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+192.168.111.48:/var/nfs/general    /nfs/general   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+192.168.111.48:/home               /nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
 
 
 
@@ -217,7 +247,7 @@ DESC;
 
 
 echo Username: root
-  MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default mysql -o jsonpath="{.data.mysql-root-password}" | base64 -d)
+MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default mysql -o jsonpath="{.data.mysql-root-password}" | base64 -d)
 
 kubectl exec mysql-primary-0 -- mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" db_control_fe > dumpfeyuli.sql
 kubectl exec mysql-secondary-0 -- mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" db_control_fe > dumpfesec.sql
@@ -229,13 +259,16 @@ kubectl exec -it mysql-primary-0 -- mysql -u root -p"$MYSQL_ROOT_PASSWORD" db_co
 
 
 
-env:
-            - name: rabbithost
-              value: rabbitmq.default.svc.cluster.local
-            - name: rabbituser
-              value: user
-            - name: rabbitpass
-              valueFrom:
-                secretKeyRef:
-                  name: rabbitmq
-                  key: rabbitmq-password
+APPS
+
+kubectl apply -f smrey-deployment-api-ingest.yaml -f smrey-deployment-ms-electronic-invoice.yaml -f smrey-deployment-ms-mq-listener-db.yaml -f smrey-deployment-ms-mq-listener.yaml -f smrey-deployment-ms-mq-publisher.yaml -f smrey-deployment-mysql-crud.yaml -f smrey-deployment-qr-crud_v2.yaml
+
+kubectl delete -f smrey-deployment-api-ingest.yaml -f smrey-deployment-ms-electronic-invoice.yaml -f smrey-deployment-ms-mq-listener-db.yaml -f smrey-deployment-ms-mq-listener.yaml -f smrey-deployment-ms-mq-publisher.yaml -f smrey-deployment-mysql-crud.yaml -f smrey-deployment-qr-crud_v2.yaml
+
+SVC
+
+kubectl apply -f smrey-service-api-ingest.yaml -f smrey-service-electronic-invoice.yaml -f smrey-service-qr-crud.yaml -f smrey-service-ms-mq-publisher.yaml -f smrey-service-mysql-crud.yaml
+
+HPA
+
+kubectl apply -f smrey-hpa-api-ingest.yaml -f smrey-hpa-ms-electronic-invoice.yaml -f smrey-hpa-ms-mq-listener-db.yaml -f smrey-hpa-ms-mq-listener.yaml -f smrey-hpa-ms-mq-publisher.yaml -f smrey-hpa-mysql-crud.yaml -f smrey-hpa-qr-crud.yaml
