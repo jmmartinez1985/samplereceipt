@@ -55,8 +55,8 @@ MYSQL
 
 microk8s helm3 install mysql bitnami/mysql --version 9.10.1 \
 	--set architecture=replication \
-	--set primary.persistence.size=50Gi \
-	--set secondary.persistence.size=50Gi
+	--set primary.persistence.size=8Gi \
+	--set secondary.persistence.size=8Gi
 
 microk8s helm3 install mysql oci://registry-1.docker.io/bitnamicharts/mysql \
 	--set architecture=replication \
@@ -269,6 +269,10 @@ SVC
 
 kubectl apply -f smrey-service-api-ingest.yaml -f smrey-service-electronic-invoice.yaml -f smrey-service-qr-crud.yaml -f smrey-service-ms-mq-publisher.yaml -f smrey-service-mysql-crud.yaml
 
+kubectl delete -f smrey-service-api-ingest.yaml -f smrey-service-electronic-invoice.yaml -f smrey-service-qr-crud.yaml -f smrey-service-ms-mq-publisher.yaml -f smrey-service-mysql-crud.yaml
+
 HPA
 
 kubectl apply -f smrey-hpa-api-ingest.yaml -f smrey-hpa-ms-electronic-invoice.yaml -f smrey-hpa-ms-mq-listener-db.yaml -f smrey-hpa-ms-mq-listener.yaml -f smrey-hpa-ms-mq-publisher.yaml -f smrey-hpa-mysql-crud.yaml -f smrey-hpa-qr-crud.yaml
+
+kubectl delete -f smrey-hpa-api-ingest.yaml -f smrey-hpa-ms-electronic-invoice.yaml -f smrey-hpa-ms-mq-listener-db.yaml -f smrey-hpa-ms-mq-listener.yaml -f smrey-hpa-ms-mq-publisher.yaml -f smrey-hpa-mysql-crud.yaml -f smrey-hpa-qr-crud.yaml
