@@ -88,6 +88,8 @@ kubectl exec --stdin --tty mysql-primary-0 -- bash
 
 mysqldump -u root db_control_fe -p > db_control_fe_dump.sql
 
+ALTER TABLE `invoice` ADD INDEX `creation_date_index` (`creationDate`);
+
 
 
 kubectl port-forward --namespace default svc/mysql-primary 3306:3306

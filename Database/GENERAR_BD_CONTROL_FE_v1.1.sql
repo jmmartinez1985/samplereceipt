@@ -27,7 +27,8 @@ CREATE TABLE `db_control_fe`.`invoice` (
   PRIMARY KEY (`id`),
   KEY `id` (`id`),
   KEY `idx_cufe` (`cufe`),
-  KEY `idx_status` (`statusId`)
+  KEY `idx_status` (`statusId`),
+  KEY `idx_creationDate` (`creationDate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='tabla de factura';
 
 CREATE TABLE `db_control_fe`.`status` (
@@ -40,7 +41,7 @@ CREATE TABLE `db_control_fe`.`status` (
 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `db_control_fe`.`SP_ADD_INVOICE`(
+CREATE DEFINER=`master`@`localhost` PROCEDURE `db_control_fe`.`SP_ADD_INVOICE`(
 pruc NVARCHAR(20),
 pbranchOffice NVARCHAR(8),
 ppointSales NVARCHAR(20),
@@ -76,7 +77,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `db_control_fe`.`SP_DELETE_INVOICE`(IN pid NVARCHAR(36))
+CREATE DEFINER=`master`@`localhost` PROCEDURE `db_control_fe`.`SP_DELETE_INVOICE`(IN pid NVARCHAR(36))
 BEGIN
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT 'Error occured';    
     
@@ -87,7 +88,7 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `db_control_fe`.`SP_DELETE_INVOICE_BY_CUFE`(IN pcufe nvarchar(75))
+CREATE DEFINER=`master`@`localhost` PROCEDURE `db_control_fe`.`SP_DELETE_INVOICE_BY_CUFE`(IN pcufe nvarchar(75))
 BEGIN
 	DELETE FROM db_control_fe.invoice 
     WHERE cufe = pcufe;
@@ -96,7 +97,7 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `db_control_fe`.`SP_GET_INVOICES`(IN pid NVARCHAR(36))
+CREATE DEFINER=`master`@`localhost` PROCEDURE `db_control_fe`.`SP_GET_INVOICES`(IN pid NVARCHAR(36))
 BEGIN 
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT 'Error occured' Message;    
 	IF pid IS NULL THEN
@@ -109,7 +110,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `db_control_fe`.`SP_GET_INVOICES_BY_STATUS`(IN pstatusId INT)
+CREATE DEFINER=`master`@`localhost` PROCEDURE `db_control_fe`.`SP_GET_INVOICES_BY_STATUS`(IN pstatusId INT)
 BEGIN
 	SELECT * FROM db_control_fe.invoice WHERE statusId = pstatusId;
 END$$
@@ -117,7 +118,7 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `db_control_fe`.`SP_UPDATE_INVOICE`(
+CREATE DEFINER=`master`@`localhost` PROCEDURE `db_control_fe`.`SP_UPDATE_INVOICE`(
 IN pid NVARCHAR(36),
 IN pruc NVARCHAR(20),
 IN pbranchOffice NVARCHAR(8), 
@@ -163,7 +164,7 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `db_control_fe`.`SP_UPDATE_INVOICE_BY_CUFE`(
+CREATE DEFINER=`master`@`localhost` PROCEDURE `db_control_fe`.`SP_UPDATE_INVOICE_BY_CUFE`(
 IN pcufe NVARCHAR(75),
 IN pruc NVARCHAR(20),
 IN pbranchOffice NVARCHAR(8), 
