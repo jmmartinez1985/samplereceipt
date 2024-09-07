@@ -71,18 +71,26 @@ Jmmb
 Finalidad: Microservicio de operaciones contra DB
 
 
-docker build -t fe-crud .
-docker tag 7b7c07fe732e soportehypernovalabs/fe-crud-v1.2:latest
-docker push soportehypernovalabs/fe-crud-v1.2:latest
-
+docker build --platform linux/amd64 -t fe-crud .
+docker tag 112e4c54e9b6d959c5997fb573fc5bee60e895e0701438d854bdedb9347c8bd0 soportehypernovalabs/fe-crud:latest-v.1.2
+docker push soportehypernovalabs/fe-crud:latest-v.1.2
 
 ------------------------------------------------------------------------------------------
-
 Finalidad: Microservicio que recibe la factura electronica desde el cliente (CORE API)
 
-docker build -t fe-ingest-data .
-docker tag 69ad2b4008c2 soportehypernovalabs/fe-ingest-data-v1.2:latest
-docker push soportehypernovalabs/fe-ingest-data-v1.2:latest
+docker build --platform linux/amd64 -t fe-ingest-data .
+docker tag 6c1b8d9041fd14793b1dd769aa645f5fe7c61e454fb3195e7b2a86602bac84bb soportehypernovalabs/fe-ingest-data:latest-v.1.2
+docker push soportehypernovalabs/fe-ingest-data:latest-v.1.2
+
+------------------------------------------------------------------------------------------
+Finalidad: Recibir los mensajes encolados y enviarle contra el PAC y el a su vez a la DGI
+
+docker build --platform linux/amd64 -t fe-listener-data .
+docker tag 88411f86120c61010b4a558f74de59a2e1d173990afe728cf7a5e87301f1cc93 soportehypernovalabs/fe-listener-data:latest-v.1.3
+docker push soportehypernovalabs/fe-listener-data:latest-v.1.3
+
+
+
 
 
 
