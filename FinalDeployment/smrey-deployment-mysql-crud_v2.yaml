@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-crud
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fe-crud
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fe-crud
+    spec:
+      containers:
+      - image: soportehypernovalabs/fe-crud:latest-v.1.2
+        imagePullPolicy: IfNotPresent
+        name: fe-crud
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "725m"        
+        ports:
+        - containerPort: 8080
+        env:
+            - name: MYSQL_HOST
+              value: mysql-primary.default.svc.cluster.local
+            - name: MYSQL_DATABASE
+              value: db_control_fe
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: mysql-root-password

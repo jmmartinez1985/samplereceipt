@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 192.168.111.48
+    server: 192.168.111.25 #192.168.111.29 DEV
     path: "/var/nfs/general"
     readOnly: no
   persistentVolumeReclaimPolicy: Retain

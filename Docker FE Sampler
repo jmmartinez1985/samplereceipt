@@ -1,0 +1,88 @@
+
+DOCKER BUILD/TAG/PUSH (sample fe-crud)
+
+------------------------------------------------------------------------------------------
+Finalidad: Microservicio de operaciones contra DB
+
+
+docker build -t fe-crud .
+docker tag 7b7c07fe732e soportehypernovalabs/fe-crud:latest
+docker push soportehypernovalabs/fe-crud:latest
+
+------------------------------------------------------------------------------------------
+Finalidad: Microservicio de operaciones contra el manejador de cola tales como envias las facturas a procesamiento
+
+sudo docker build -t fe-mq-publisher .
+docker tag 46b860cdafdd soportehypernovalabs/fe-mq-publisher:latest
+docker push soportehypernovalabs/fe-mq-publisher:latest
+
+
+------------------------------------------------------------------------------------------
+Finalidad: Microservicio que recibe la factura electronica desde el cliente (CORE API)
+
+docker build -t fe-ingest-data .
+docker tag 69ad2b4008c2 soportehypernovalabs/fe-ingest-data:latest
+docker push soportehypernovalabs/fe-ingest-data:latest
+
+------------------------------------------------------------------------------------------
+Finalidad: Recibir los mensajes encolados y enviarle contra el PAC y el a su vez a la DGI
+
+docker build -t fe-listener-data .
+docker tag 69ad2b4008c2 soportehypernovalabs/fe-listener-data:latest-v.1.2
+docker push soportehypernovalabs/fe-listener-data:latest-v.1.2
+
+------------------------------------------------------------------------------------------
+Finalidad: Enviar eventos al elastic search
+
+docker build -t fe-elastic-crud .
+docker tag 69ad2b4008c2 soportehypernovalabs/fe-elastic-crud:latest
+docker push soportehypernovalabs/fe-elastic-crud:latest
+
+------------------------------------------------------------------------------------------
+Finalidad: Realizar envio async hacia la DB por posible contencion en el motor
+
+docker build -t fe-listener-db .
+docker tag dabe617403ea soportehypernovalabs/fe-listener-db:latest
+docker push soportehypernovalabs/fe-listener-db:latest
+
+------------------------------------------------------------------------------------------
+Finalidad: Envio de facturas SYNC al PAC y a su vez a la DGI (CORE API)
+
+docker build -t fe-invoice-dgi .
+docker tag dabe617403ea soportehypernovalabs/fe-invoice-dgi:latest
+docker push soportehypernovalabs/fe-invoice-dgi:latest
+
+------------------------------------------------------------------------------------------
+Finalidad: PACMethod como servicio.
+
+docker build -t fe-pac-as-ws .
+docker tag fdabe617403ea soportehypernovalabs/fe-pac-as-ws:latest
+docker push soportehypernovalabs/fe-pac-as-ws:latest
+
+
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+
+06 -SEP - 2024
+
+Jmmb
+
+Finalidad: Microservicio de operaciones contra DB
+
+
+docker build -t fe-crud .
+docker tag 7b7c07fe732e soportehypernovalabs/fe-crud-v1.2:latest
+docker push soportehypernovalabs/fe-crud-v1.2:latest
+
+
+------------------------------------------------------------------------------------------
+
+Finalidad: Microservicio que recibe la factura electronica desde el cliente (CORE API)
+
+docker build -t fe-ingest-data .
+docker tag 69ad2b4008c2 soportehypernovalabs/fe-ingest-data-v1.2:latest
+docker push soportehypernovalabs/fe-ingest-data-v1.2:latest
+
+
+

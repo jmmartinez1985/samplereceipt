@@ -8,8 +8,8 @@ spec:
     apiVersion: apps/v1 
     kind: Deployment 
     name: fe-mq-listener 
-  minReplicas: 15
-  maxReplicas: 25 
+  minReplicas: 25
+  maxReplicas: 55
   metrics: 
   - type: Resource
     resource:
