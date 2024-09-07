@@ -18,7 +18,7 @@ spec:
         persistentVolumeClaim:
           claimName: pvc-nfs-pv-fe-data 
       containers:
-      - image: soportehypernovalabs/fe-ingest-data:latest
+      - image: soportehypernovalabs/fe-ingest-data:latest-v.1.2
         imagePullPolicy: Always
         name: fe-ingest-data
         resources:
