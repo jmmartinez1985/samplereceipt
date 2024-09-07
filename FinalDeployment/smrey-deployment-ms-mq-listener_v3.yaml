@@ -72,4 +72,6 @@ spec:
             - name: aludra.subscriptionKey
               value: 286e8fb385cb48769b3b31ff5bb1bcf7
             - name: aludra.company
-              value: REY1              
+              value: REY1
+            - name: retryValue
+              value: 10
