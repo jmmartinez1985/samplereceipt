@@ -72,4 +72,6 @@ spec:
             - name: aludra.subscriptionKey
               value: f718d6d8af9848008b8f6a6f516cb7ba
             - name: aludra.company
-              value: INMO              
+              value: INMO
+            - name: retryValue
+              value: 10
