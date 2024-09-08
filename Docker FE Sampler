@@ -86,7 +86,7 @@ docker push soportehypernovalabs/fe-ingest-data:latest-v.1.2
 Finalidad: Recibir los mensajes encolados y enviarle contra el PAC y el a su vez a la DGI
 
 docker build --platform linux/amd64 -t fe-listener-data .
-docker tag 88411f86120c61010b4a558f74de59a2e1d173990afe728cf7a5e87301f1cc93 soportehypernovalabs/fe-listener-data:latest-v.1.3
+docker tag 54a63394538264c8c3e38a1808ac130095274610543dbfec4f13bc574d5c5f2d soportehypernovalabs/fe-listener-data:latest-v.1.3
 docker push soportehypernovalabs/fe-listener-data:latest-v.1.3
 
 
