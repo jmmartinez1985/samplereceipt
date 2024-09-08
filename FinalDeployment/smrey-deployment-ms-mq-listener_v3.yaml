@@ -74,4 +74,4 @@ spec:
             - name: aludra.company
               value: REY1
             - name: retryValue
-              value: 10
+              value: 50
