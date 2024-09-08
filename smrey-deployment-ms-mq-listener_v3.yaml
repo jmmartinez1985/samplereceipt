@@ -74,4 +74,4 @@ spec:
             - name: aludra.company
               value: INMO
             - name: retryValue
-              value: 10
+              value: "10"
