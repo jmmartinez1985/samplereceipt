@@ -319,11 +319,24 @@ NFS
 kubectl apply -f 1-pvc-nfs.yaml -f 2-pv-nfs.yaml
 
 
-APPS
+APPS 
 
 kubectl apply -f smrey-deployment-api-ingest.yaml -f smrey-deployment-ms-electronic-invoice.yaml -f smrey-deployment-ms-mq-listener-db.yaml -f smrey-deployment-ms-mq-listener.yaml -f smrey-deployment-ms-mq-publisher.yaml -f smrey-deployment-mysql-crud.yaml -f smrey-deployment-qr-crud_v2.yaml
 
 kubectl delete -f smrey-deployment-api-ingest.yaml -f smrey-deployment-ms-electronic-invoice.yaml -f smrey-deployment-ms-mq-listener-db.yaml -f smrey-deployment-ms-mq-listener.yaml -f smrey-deployment-ms-mq-publisher.yaml -f smrey-deployment-mysql-crud.yaml -f smrey-deployment-qr-crud_v2.yaml
+
+
+V2 ingest, crud
+V3 listener
+
+kubectl apply -f smrey-deployment-api-ingest_v2.yaml -f smrey-deployment-ms-electronic-invoice.yaml -f smrey-deployment-ms-mq-listener-db.yaml -f smrey-deployment-ms-mq-listener_v3.yaml -f smrey-deployment-ms-mq-publisher.yaml -f smrey-deployment-mysql-crud_v2.yaml -f smrey-deployment-qr-crud_v2.yaml
+
+kubectl delete -f smrey-deployment-api-ingest_v2.yaml -f smrey-deployment-ms-electronic-invoice.yaml -f smrey-deployment-ms-mq-listener-db.yaml -f smrey-deployment-ms-mq-listener_v3.yaml -f smrey-deployment-ms-mq-publisher.yaml -f smrey-deployment-mysql-crud_v2.yaml -f smrey-deployment-qr-crud_v2.yaml
+
+
+kubectl apply -f smrey-deployment-mysql-crud_v2.yaml -f smrey-deployment-ms-mq-listener_v3.yaml
+kubectl delete -f smrey-deployment-mysql-crud_v2.yaml -f smrey-deployment-ms-mq-listener_v3.yaml
+
 
 SVC
 
@@ -338,7 +351,7 @@ kubectl apply -f smrey-hpa-api-ingest.yaml -f smrey-hpa-ms-electronic-invoice.ya
 kubectl delete -f smrey-hpa-api-ingest.yaml -f smrey-hpa-ms-electronic-invoice.yaml -f smrey-hpa-ms-mq-listener-db.yaml -f smrey-hpa-ms-mq-listener.yaml -f smrey-hpa-ms-mq-publisher.yaml -f smrey-hpa-mysql-crud.yaml -f smrey-hpa-qr-crud.yaml
 
 
-
+kubectl apply -f smrey-service-mysql-crud.yaml -f smrey-deployment-ms-mq-listener.yaml
 
 
 Upgrade Cluster
@@ -356,13 +369,75 @@ SLAVE
 sudo snap refresh microk8s --channel 1.26/stable
 
 
+Delete forced
+
+kubectl get pods | grep 'fe-qrcode' | grep -E 'Terminating|Error|ContainerCreating' | awk '{print $1}' | xargs kubectl delete pod --force --grace-period=0
+
+
+kubectl get pods | grep 'fe-mq-listener-' | grep -E 'Terminating|Error|ContainerCreating' | awk '{print $1}' | xargs kubectl delete pod --force --grace-period=0
+
+
+
+#!/bin/bash
+
+echo "Diagnóstico de problemas de autorización de Calico"
+
+# 1. Verificar la versión de Calico
+echo "Versión de Calico:"
+kubectl get pods -n kube-system -l k8s-app=calico-node -o jsonpath='{.items[0].spec.containers[0].image}'
+echo ""
+
+# 2. Comprobar el estado de los pods de Calico
+echo "Estado de los pods de Calico:"
+kubectl get pods -n kube-system -l k8s-app=calico-node
+echo ""
+
+# 3. Verificar los logs de Calico
+echo "Logs del primer pod de Calico:"
+CALICO_POD=$(kubectl get pods -n kube-system -l k8s-app=calico-node -o jsonpath='{.items[0].metadata.name}')
+kubectl logs $CALICO_POD -n kube-system | tail -n 20
+echo ""
+
+# 4. Comprobar los permisos de RBAC de Calico
+echo "Roles de Calico:"
+kubectl get clusterroles | grep calico
+echo ""
+echo "RoleBindings de Calico:"
+kubectl get clusterrolebindings | grep calico
+echo ""
+
+# 5. Verificar la configuración de Calico
+echo "Configuración de Calico:"
+kubectl get configmap -n kube-system calico-config -o yaml
+echo ""
+
+# 6. Comprobar los secretos de Calico
+echo "Secretos de Calico:"
+kubectl get secrets -n kube-system | grep calico
+echo ""
+
+echo "Fin del diagnóstico. Revisa la salida para identificar posibles problemas."
+
+# Posibles soluciones
+echo "Posibles soluciones:"
+echo "1. Reiniciar los pods de Calico:"
+echo "   kubectl delete pod -n kube-system -l k8s-app=calico-node"
+echo ""
+echo "2. Recrear los secretos de Calico:"
+echo "   kubectl delete secret -n kube-system calico-node-token"
+echo "   kubectl create secret generic -n kube-system calico-node-token"
+echo ""
+echo "3. Verificar y actualizar los permisos RBAC de Calico:"
+echo "   kubectl apply -f https://docs.projectcalico.org/manifests/rbac-kdd.yaml"
+echo ""
+echo "4. Reinstalar Calico:"
+echo "   kubectl delete -f https://docs.projectcalico.org/manifests/calico.yaml"
+echo "   kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml"
+echo ""
+echo "IMPORTANTE: Asegúrate de hacer una copia de seguridad antes de aplicar estas soluciones."
 
 
 
 
-kubectl delete -f smrey-deployment-mysql-crud.yaml -f smrey-deployment-api-ingest.yaml -f smrey-deployment-ms-mq-listener-db.yaml -f smrey-deployment-ms-mq-publisher.yaml -f smrey-deployment-ms-mq-listener.yaml 
-
-kubectl apply -f smrey-deployment-mysql-crud.yaml -f smrey-deployment-api-ingest.yaml -f smrey-deployment-ms-mq-listener-db.yaml -f smrey-deployment-ms-mq-publisher.yaml  
 
 
-microk8s helm3 install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq --version 14.6.8
