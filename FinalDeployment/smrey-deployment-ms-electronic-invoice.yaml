@@ -36,4 +36,12 @@ spec:
             - name: aludra.subscriptionKey
               value: 286e8fb385cb48769b3b31ff5bb1bcf7
             - name: aludra.company
-              value: REY1              
+              value: REY1
+            - name: flagstatsIngest
+              value: "false"
+            - name: k8s.wsstatsIngest
+              value: http://fe-elastic-crud-service.default.svc.cluster.local/stats/ingest
+            - name: k8s.wsinvoiceStore
+              value: http://fe-crud-service.default.svc.cluster.local/invoice/store
+            - name: k8s.wsupdateinvoice
+              value: http://fe-crud-service.default.svc.cluster.local/invoice/patch        
