@@ -23,7 +23,7 @@ spec:
           name: fe-mq-listener
           resources:
             requests:
-              memory: "64Mi"
+              memory: "150Mi"
               cpu: "250m"
             limits:
               memory: "256Mi"
