@@ -158,86 +158,86 @@ spec:
 
 ---
 # ConfigMap opcional para configuraciones complejas
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: fe-invoice-reprocessor-config
-  namespace: default
-data:
-  config.yaml: |
-    nfs:
-      base_path: "/nfs/general"
-      file_extension: ".txt"
-      days_threshold: 1
-    
-    publish_api:
-      base_url: "http://fe-mq-publisher-service.default.svc.cluster.local"
-      endpoint: "/publish/fe"
-      timeout: 30
-      retry_attempts: 3
-    
-    scheduler:
-      check_interval_minutes: 30
-      batch_size: 100
-    
-    logging:
-      level: "INFO"
-      format: "structured"
-
----
-# CronJob alternativo para ejecución programada
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: fe-invoice-reprocessor-cronjob
-  namespace: default
-  labels:
-    app: fe-invoice-reprocessor-cron
-spec:
-  # Ejecutar cada 30 minutos
-  schedule: "*/30 * * * *"
-  concurrencyPolicy: Forbid  # No permitir ejecuciones concurrentes
-  successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 1
-
-  jobTemplate:
-    spec:
-      template:
-        metadata:
-          labels:
-            app: fe-invoice-reprocessor-cron
-        spec:
-          restartPolicy: Never
-
-          volumes:
-          - name: nfs-data
-            persistentVolumeClaim:
-              claimName: pvc-nfs-pv-fe-data
-
-          containers:
-          - name: invoice-reprocessor
-            image: soportehypernovalabs/fe-pac-reingest-bills:latest
-            command: ["python", "main.py", "--run-once"]
-
-            resources:
-              requests:
-                memory: "128Mi"
-                cpu: "100m"
-              limits:
-                memory: "512Mi"
-                cpu: "500m"
-
-            volumeMounts:
-            - name: nfs-data
-              mountPath: /var/nfs/general
-              readOnly: true
-
-            env:
-            - name: LOG_LEVEL
-              value: "INFO"
-            - name: NFS_BASE_PATH
-              value: "/nfs/general"
-            - name: PUBLISH_API_BASE_URL
-              value: "http://fe-mq-publisher-service.default.svc.cluster.local"
-            - name: PUBLISH_API_ENDPOINT
-              value: "/publish/fe"
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: fe-invoice-reprocessor-config
+#  namespace: default
+#data:
+#  config.yaml: |
+#    nfs:
+#      base_path: "/nfs/general"
+#      file_extension: ".txt"
+#      days_threshold: 1
+#
+#    publish_api:
+#      base_url: "http://fe-mq-publisher-service.default.svc.cluster.local"
+#      endpoint: "/publish/fe"
+#      timeout: 30
+#      retry_attempts: 3
+#
+#    scheduler:
+#      check_interval_minutes: 30
+#      batch_size: 100
+#
+#    logging:
+#      level: "INFO"
+#      format: "structured"
+#
+#---
+## CronJob alternativo para ejecución programada
+#apiVersion: batch/v1
+#kind: CronJob
+#metadata:
+#  name: fe-invoice-reprocessor-cronjob
+#  namespace: default
+#  labels:
+#    app: fe-invoice-reprocessor-cron
+#spec:
+#  # Ejecutar cada 30 minutos
+#  schedule: "*/30 * * * *"
+#  concurrencyPolicy: Forbid  # No permitir ejecuciones concurrentes
+#  successfulJobsHistoryLimit: 3
+#  failedJobsHistoryLimit: 1
+#
+#  jobTemplate:
+#    spec:
+#      template:
+#        metadata:
+#          labels:
+#            app: fe-invoice-reprocessor-cron
+#        spec:
+#          restartPolicy: Never
+#
+#          volumes:
+#          - name: nfs-data
+#            persistentVolumeClaim:
+#              claimName: pvc-nfs-pv-fe-data
+#
+#          containers:
+#          - name: invoice-reprocessor
+#            image: soportehypernovalabs/fe-pac-reingest-bills:latest
+#            command: ["python", "main.py", "--run-once"]
+#
+#            resources:
+#              requests:
+#                memory: "128Mi"
+#                cpu: "100m"
+#              limits:
+#                memory: "512Mi"
+#                cpu: "500m"
+#
+#            volumeMounts:
+#            - name: nfs-data
+#              mountPath: /var/nfs/general
+#              readOnly: true
+#
+#            env:
+#            - name: LOG_LEVEL
+#              value: "INFO"
+#            - name: NFS_BASE_PATH
+#              value: "/nfs/general"
+#            - name: PUBLISH_API_BASE_URL
+#              value: "http://fe-mq-publisher-service.default.svc.cluster.local"
+#            - name: PUBLISH_API_ENDPOINT
+#              value: "/publish/fe"
