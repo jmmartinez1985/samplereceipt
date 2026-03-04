@@ -90,6 +90,17 @@ docker tag 54a63394538264c8c3e38a1808ac130095274610543dbfec4f13bc574d5c5f2d sopo
 docker push soportehypernovalabs/fe-listener-data:latest-v.1.3
 
 
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+
+27 -AGO - 2025
+
+docker build --platform linux/amd64 -t fe-listener-data .
+docker tag 44c1ddb49b7cb92b389995526ca8f3cf9d92a75cbfdcba00f85a6527bb3e8a2a soportehypernovalabs/fe-listener-data:latest-v.1.4
+docker push soportehypernovalabs/fe-listener-data:latest-v.1.4
+
+
 
 
 
